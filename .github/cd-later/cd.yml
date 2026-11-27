@@ -1,12 +1,21 @@
-# CI/CD pipeline for the HealthTechGov BMI Checker
-# Runs every time code is pushed to the main branch.
+# CD pipeline for the HealthTechGov BMI Checker (NOT ACTIVE YET)
+# CD = Continuous Deployment: automatically put a tested build live.
+#
+# GitHub only runs workflows inside .github/workflows/, so this file does
+# nothing while it sits in .github/cd-later/.
+#
+# To turn it on later:
+#   1. Settings -> Pages -> Build and deployment -> Source -> "GitHub Actions"
+#   2. Move this file to .github/workflows/cd.yml, then commit and push.
+#
+# It is a full workflow: it tests and builds again, then deploys only if that passed.
 
-name: CI/CD Pipeline
+name: CD Pipeline
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:        # adds a "Run workflow" button in the Actions tab
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -18,9 +27,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # ---------- CI: check the code and build it ----------
-  ci:
-    name: CI - Test and Build
+  build:
+    name: Test and Build for deploy
     runs-on: ubuntu-latest
     steps:
       - name: 1. Get the code
@@ -37,7 +45,7 @@ jobs:
       - name: 4. Build the website
         run: npm run build
 
-      - name: 5. Save the build (artifact)
+      - name: 5. Save the build for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -45,7 +53,7 @@ jobs:
   # ---------- CD: put the build live ----------
   cd:
     name: CD - Deploy to GitHub Pages
-    needs: ci                 # runs ONLY if CI passed
+    needs: build              # runs ONLY if the tests and build passed
     runs-on: ubuntu-latest
     environment:
       name: github-pages
