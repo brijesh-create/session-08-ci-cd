@@ -1,0 +1,56 @@
+# CI/CD pipeline for the HealthTechGov BMI Checker
+# Runs every time code is pushed to the main branch.
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # adds a "Run workflow" button in the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # ---------- CI: check the code and build it ----------
+  ci:
+    name: CI - Test and Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Get the code
+        uses: actions/checkout@v4
+
+      - name: 2. Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 3. Run tests
+        run: npm test
+
+      - name: 4. Build the website
+        run: npm run build
+
+      - name: 5. Save the build (artifact)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  # ---------- CD: put the build live ----------
+  cd:
+    name: CD - Deploy to GitHub Pages
+    needs: ci                 # runs ONLY if CI passed
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 6. Deploy the website
+        id: deployment
+        uses: actions/deploy-pages@v4

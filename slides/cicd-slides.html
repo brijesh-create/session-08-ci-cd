@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CI/CD Pipeline Slides</title>
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  :root {
+    --bg: #0f172a; --panel: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+    --blue: #38bdf8; --green: #4ade80; --purple: #c084fc; --amber: #fbbf24; --red: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .slide { width: 1280px; height: 720px; padding: 56px 64px; display: flex; flex-direction: column;
+    page-break-after: always; break-after: page; position: relative; overflow: hidden; }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+  .num { position: absolute; bottom: 24px; right: 40px; color: #475569; font-size: 18px; }
+  .tag { font-size: 20px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  h1 { font-size: 52px; line-height: 1.1; margin-bottom: 40px; }
+  h1 .ci { color: var(--blue); } h1 .cd { color: var(--green); }
+  .stage { flex: 1; display: flex; align-items: center; justify-content: center; }
+  .row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+  .box { border: 3px solid var(--c, var(--blue)); border-radius: 18px; padding: 22px 20px; text-align: center;
+    background: color-mix(in srgb, var(--c, var(--blue)) 12%, var(--panel)); min-width: 170px; }
+  .box b { display: block; font-size: 28px; color: var(--c, var(--blue)); margin-bottom: 8px; }
+  .box span { font-size: 19px; color: var(--text); line-height: 1.35; }
+  .box.small { min-width: 140px; padding: 16px 14px; }
+  .box.small b { font-size: 24px; }
+  .arrow { font-size: 44px; color: #64748b; }
+  .group { border: 3px dashed var(--c); border-radius: 24px; padding: 48px 22px 22px; position: relative; }
+  .group > .label { position: absolute; top: 12px; left: 22px; font-size: 22px; font-weight: 700; color: var(--c); letter-spacing: 1px; }
+  .note { margin-top: 36px; text-align: center; font-size: 26px; color: var(--muted); }
+  .note strong { color: var(--text); }
+  .blue { --c: var(--blue); } .green { --c: var(--green); } .purple { --c: var(--purple); }
+  .amber { --c: var(--amber); } .red { --c: var(--red); } .grey { --c: #64748b; }
+  .faded { opacity: .4; }
+  .title-slide { justify-content: center; align-items: center; text-align: center; }
+  .title-slide h1 { font-size: 76px; margin-bottom: 20px; }
+  .title-slide p { font-size: 28px; color: var(--muted); }
+  .lane { display: flex; align-items: center; gap: 14px; margin: 16px 0; }
+  .lane .who { width: 150px; font-size: 24px; font-weight: 700; color: var(--c); text-align: right; padding-right: 10px; }
+  .cols { display: flex; gap: 40px; flex: 1; align-items: stretch; }
+  .col { flex: 1; background: var(--panel); border-radius: 20px; padding: 32px; border-top: 6px solid var(--c); display: flex; flex-direction: column; }
+  .col h2 { font-size: 34px; color: var(--c); margin-bottom: 20px; }
+  .col p { font-size: 24px; line-height: 1.5; color: var(--text); }
+  .col .flow { margin-top: auto; padding-top: 24px; font-size: 22px; color: var(--muted); }
+  table { border-collapse: collapse; font-size: 26px; margin: 0 auto; }
+  td, th { padding: 16px 28px; border-bottom: 2px solid #334155; text-align: left; }
+  th { color: var(--muted); font-size: 20px; text-transform: uppercase; letter-spacing: 2px; }
+  td:first-child { color: var(--blue); font-weight: 600; } td:last-child { color: var(--amber); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- 1. Title -->
+<section class="slide title-slide">
+  <div class="tag">Session 8 · Sprint 2 · Week 4</div>
+  <h1><span style="color:var(--blue)">CI</span> / <span style="color:var(--green)">CD</span></h1>
+  <p>How code gets from a laptop to users, automatically</p>
+  <div class="num">1</div>
+</section>
+
+<!-- 2. Big picture -->
+<section class="slide">
+  <div class="tag">The big picture</div>
+  <h1>One push starts everything</h1>
+  <div class="stage">
+    <div class="row">
+      <div class="box purple"><b>Push</b><span>You save code<br>to GitHub</span></div>
+      <div class="arrow">→</div>
+      <div class="group blue"><div class="label">CI · check the code</div>
+        <div class="row">
+          <div class="box small"><b>Test</b><span>Run checks</span></div>
+          <div class="arrow">→</div>
+          <div class="box small"><b>Build</b><span>Make it ready</span></div>
+        </div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="group green"><div class="label">CD · ship the code</div>
+        <div class="row">
+          <div class="box small green"><b>Deploy</b><span>Put it on<br>a server</span></div>
+          <div class="arrow">→</div>
+          <div class="box small green"><b>Live</b><span>Users see it</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="note"><strong>CI</strong> asks "is the code good?" &nbsp;·&nbsp; <strong>CD</strong> asks "how do users get it?"</p>
+  <div class="num">2</div>
+</section>
+
+<!-- 3. CI stages -->
+<section class="slide">
+  <div class="tag" style="color:var(--blue)">Part 1 · Continuous Integration</div>
+  <h1>The <span class="ci">CI</span> stages</h1>
+  <div class="stage">
+    <div class="row">
+      <div class="box"><b>1. Get code</b><span>Download the<br>latest code</span></div>
+      <div class="arrow">→</div>
+      <div class="box"><b>2. Set up</b><span>Install the tools<br>(Node, Python…)</span></div>
+      <div class="arrow">→</div>
+      <div class="box"><b>3. Test</b><span>Run automatic<br>checks</span></div>
+      <div class="arrow">→</div>
+      <div class="box"><b>4. Build</b><span>Package the<br>app</span></div>
+    </div>
+  </div>
+  <p class="note">Runs on <strong>every push</strong>. Finds bugs in minutes, not weeks.</p>
+  <div class="num">3</div>
+</section>
+
+<!-- 4. CD stages -->
+<section class="slide">
+  <div class="tag" style="color:var(--green)">Part 2 · Continuous Delivery / Deployment</div>
+  <h1>The <span class="cd">CD</span> stages</h1>
+  <div class="stage">
+    <div class="row">
+      <div class="box green"><b>1. Save build</b><span>Keep the ready<br>package (artifact)</span></div>
+      <div class="arrow">→</div>
+      <div class="box green"><b>2. Deploy</b><span>Copy it to<br>the server</span></div>
+      <div class="arrow">→</div>
+      <div class="box green"><b>3. Go live</b><span>New version<br>replaces old</span></div>
+      <div class="arrow">→</div>
+      <div class="box green"><b>4. Check</b><span>Is the site<br>working?</span></div>
+    </div>
+  </div>
+  <p class="note">Starts <strong>only if CI passed</strong>. No one copies files by hand.</p>
+  <div class="num">4</div>
+</section>
+
+<!-- 5. The gate -->
+<section class="slide">
+  <div class="tag">The safety gate</div>
+  <h1>What if a test fails?</h1>
+  <div class="stage" style="flex-direction:column; align-items:stretch;">
+    <div class="lane green">
+      <div class="who">Good code</div>
+      <div class="box small blue"><b>Test ✓</b></div><div class="arrow">→</div>
+      <div class="box small blue"><b>Build ✓</b></div><div class="arrow">→</div>
+      <div class="box small green"><b>Deploy ✓</b></div><div class="arrow">→</div>
+      <div class="box small green"><b>New version live</b></div>
+    </div>
+    <div class="lane red">
+      <div class="who">Bad code</div>
+      <div class="box small red"><b>Test ✗</b></div><div class="arrow" style="color:var(--red)">■</div>
+      <div class="box small grey faded"><b>Build</b><span>skipped</span></div><div class="arrow faded">→</div>
+      <div class="box small grey faded"><b>Deploy</b><span>skipped</span></div><div class="arrow faded">→</div>
+      <div class="box small amber"><b>Old version stays</b></div>
+    </div>
+  </div>
+  <p class="note">The pipeline stops. <strong>Bad code never reaches users.</strong></p>
+  <div class="num">5</div>
+</section>
+
+<!-- 6. Delivery vs Deployment -->
+<section class="slide">
+  <div class="tag">CD has two meanings</div>
+  <h1>Delivery vs Deployment</h1>
+  <div class="cols">
+    <div class="col amber">
+      <h2>Continuous Delivery</h2>
+      <p>The code is always <strong>ready</strong> to go live.</p>
+      <p>A <strong>person clicks "Approve"</strong> to release it.</p>
+      <p class="flow">CI ✓ → 👤 Approve → Live</p>
+    </div>
+    <div class="col green">
+      <h2>Continuous Deployment</h2>
+      <p>The code goes live <strong>automatically</strong>.</p>
+      <p>No human step. Tests are the only gate.</p>
+      <p class="flow">CI ✓ → Live</p>
+    </div>
+  </div>
+  <p class="note">Healthcare (like HealthTechGov) often uses <strong>Delivery</strong>: a person approves first.</p>
+  <div class="num">6</div>
+</section>
+
+<!-- 7. Today's demo -->
+<section class="slide">
+  <div class="tag">Today's demo</div>
+  <h1>Our website's pipeline</h1>
+  <div class="stage">
+    <div class="row">
+      <div class="box purple"><b>Code</b><span>HTML · CSS · JS<br>BMI Checker</span></div>
+      <div class="arrow">→</div>
+      <div class="box purple"><b>GitHub</b><span>git push</span></div>
+      <div class="arrow">→</div>
+      <div class="group blue"><div class="label">GitHub Actions</div>
+        <div class="row">
+          <div class="box small"><b>CI job</b><span>Test + Build</span></div>
+          <div class="arrow">→</div>
+          <div class="box small green"><b>CD job</b><span>Deploy</span></div>
+        </div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="box green"><b>Live site</b><span>GitHub Pages</span></div>
+    </div>
+  </div>
+  <p class="note">Change "Version 1" → "Version 2", push, and watch it go live by itself.</p>
+  <div class="num">7</div>
+</section>
+
+<!-- 8. Real world / AWS -->
+<section class="slide">
+  <div class="tag">For your report</div>
+  <h1>The same idea on AWS</h1>
+  <div class="stage">
+    <table>
+      <tr><th>What we used today</th><th>Does the same job</th><th>AWS service</th></tr>
+      <tr><td>GitHub Actions workflow</td><td>Runs the whole pipeline</td><td>CodePipeline</td></tr>
+      <tr><td>CI job (test + build)</td><td>Checks and packages code</td><td>CodeBuild</td></tr>
+      <tr><td>CD job (deploy)</td><td>Puts the app on a server</td><td>CodeDeploy</td></tr>
+      <tr><td>GitHub Pages</td><td>Hosts the website</td><td>S3 / EC2</td></tr>
+      <tr><td>GitHub Secrets</td><td>Keeps keys out of code</td><td>Secrets Manager</td></tr>
+    </table>
+  </div>
+  <div class="num">8</div>
+</section>
+
+</body>
+</html>

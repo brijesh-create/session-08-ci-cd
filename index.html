@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthTechGov BMI Checker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="card">
+    <h1>HealthTechGov</h1>
+    <p class="subtitle">BMI Checker</p>
+
+    <form id="bmi-form">
+      <label>Weight (kg)
+        <input type="number" id="weight" min="1" step="0.1" required>
+      </label>
+      <label>Height (cm)
+        <input type="number" id="height" min="1" step="0.1" required>
+      </label>
+      <button type="submit">Check BMI</button>
+    </form>
+
+    <div id="result" class="result" hidden></div>
+  </main>
+
+  <footer>
+    <span class="version">Version 1</span>
+    <span class="build">__BUILD_INFO__</span>
+  </footer>
+
+  <script src="bmi.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

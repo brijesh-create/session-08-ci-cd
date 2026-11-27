@@ -1,0 +1,9 @@
+{
+  "name": "healthtechgov-bmi-checker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test bmi.test.js",
+    "build": "node build.js"
+  }
+}
